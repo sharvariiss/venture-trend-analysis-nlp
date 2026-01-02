@@ -1,4 +1,5 @@
-pandas
 numpy
-python-dotenv
-great-expectations
+pandas
+scikit-learn
+matplotlib
+joblib
