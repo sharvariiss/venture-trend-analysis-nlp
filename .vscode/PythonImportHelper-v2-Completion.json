@@ -1,0 +1,222 @@
+[
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "joblib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "joblib",
+        "description": "joblib",
+        "detail": "joblib",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "NMF",
+        "importPath": "sklearn.decomposition",
+        "description": "sklearn.decomposition",
+        "isExtraImport": true,
+        "detail": "sklearn.decomposition",
+        "documentation": {}
+    },
+    {
+        "label": "TfidfVectorizer",
+        "importPath": "sklearn.feature_extraction.text",
+        "description": "sklearn.feature_extraction.text",
+        "isExtraImport": true,
+        "detail": "sklearn.feature_extraction.text",
+        "documentation": {}
+    },
+    {
+        "label": "clean_text",
+        "kind": 2,
+        "importPath": "src.preprocess",
+        "description": "src.preprocess",
+        "peekOfCode": "def clean_text(s: str) -> str:\n    s = s.lower()\n    s = s.replace(\",\", \" \")\n    s = s.replace(\"/\", \" \")\n    s = re.sub(r\"[^a-z0-9\\s\\-\\+]\", \" \", s)\n    s = re.sub(r\"\\s+\", \" \", s).strip()\n    return s\ndef main():\n    if not RAW_PATH.exists():\n        print(f\"[ERROR] Raw file not found: {RAW_PATH}\")",
+        "detail": "src.preprocess",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "src.preprocess",
+        "description": "src.preprocess",
+        "peekOfCode": "def main():\n    if not RAW_PATH.exists():\n        print(f\"[ERROR] Raw file not found: {RAW_PATH}\")\n        print(\"Place your Kaggle CSV at data/raw/startup_investments.csv\")\n        sys.exit(1)\n    df = pd.read_csv(RAW_PATH, encoding=\"latin1\", low_memory=False)\n    cat_col = _safe_col(df, [\"category_list\", \"categories\", \"category\"])\n    market_col = _safe_col(df, [\"market\", \"markets\", \"sector\"])\n    year_col = _safe_col(df, [\"founded_year\", \"year_founded\", \"founded\"])\n    # Build text field (this is what we run NLP on)",
+        "detail": "src.preprocess",
+        "documentation": {}
+    },
+    {
+        "label": "RAW_PATH",
+        "kind": 5,
+        "importPath": "src.preprocess",
+        "description": "src.preprocess",
+        "peekOfCode": "RAW_PATH = Path(\"data/raw/startup_investments.csv\")\nOUT_PATH = Path(\"data/processed/clean_text.csv\")\ndef _safe_col(df: pd.DataFrame, candidates: list[str]) -> str | None:\n    \"\"\"Return the first matching column name from candidates (case-insensitive).\"\"\"\n    lower_map = {c.lower(): c for c in df.columns}\n    for cand in candidates:\n        if cand.lower() in lower_map:\n            return lower_map[cand.lower()]\n    return None\ndef clean_text(s: str) -> str:",
+        "detail": "src.preprocess",
+        "documentation": {}
+    },
+    {
+        "label": "OUT_PATH",
+        "kind": 5,
+        "importPath": "src.preprocess",
+        "description": "src.preprocess",
+        "peekOfCode": "OUT_PATH = Path(\"data/processed/clean_text.csv\")\ndef _safe_col(df: pd.DataFrame, candidates: list[str]) -> str | None:\n    \"\"\"Return the first matching column name from candidates (case-insensitive).\"\"\"\n    lower_map = {c.lower(): c for c in df.columns}\n    for cand in candidates:\n        if cand.lower() in lower_map:\n            return lower_map[cand.lower()]\n    return None\ndef clean_text(s: str) -> str:\n    s = s.lower()",
+        "detail": "src.preprocess",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "def main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    texts = df[\"text\"].fillna(\"\").astype(str)\n    # Vectorize\n    vectorizer = TfidfVectorizer(\n        max_features=20000,",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "IN_PATH",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "IN_PATH = Path(\"data/processed/clean_text.csv\")\nRESULTS_MD = Path(\"reports/results.md\")\nFIG_PATH = Path(\"reports/figures/topic_distribution.png\")\nMODEL_PATH = Path(\"models/topic_model.joblib\")\nN_TOPICS = 10\nTOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "RESULTS_MD",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "RESULTS_MD = Path(\"reports/results.md\")\nFIG_PATH = Path(\"reports/figures/topic_distribution.png\")\nMODEL_PATH = Path(\"models/topic_model.joblib\")\nN_TOPICS = 10\nTOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "FIG_PATH",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "FIG_PATH = Path(\"reports/figures/topic_distribution.png\")\nMODEL_PATH = Path(\"models/topic_model.joblib\")\nN_TOPICS = 10\nTOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "MODEL_PATH",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "MODEL_PATH = Path(\"models/topic_model.joblib\")\nN_TOPICS = 10\nTOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    texts = df[\"text\"].fillna(\"\").astype(str)",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "N_TOPICS",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "N_TOPICS = 10\nTOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    texts = df[\"text\"].fillna(\"\").astype(str)\n    # Vectorize",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "TOP_WORDS",
+        "kind": 5,
+        "importPath": "src.topic_model",
+        "description": "src.topic_model",
+        "peekOfCode": "TOP_WORDS = 12\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing processed file: {IN_PATH}\")\n        print(\"Run: python src/preprocess.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    texts = df[\"text\"].fillna(\"\").astype(str)\n    # Vectorize\n    vectorizer = TfidfVectorizer(",
+        "detail": "src.topic_model",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "src.trend_report",
+        "description": "src.trend_report",
+        "peekOfCode": "def main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing file: {IN_PATH}\")\n        print(\"Run: python src/topic_model.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    if \"founded_year\" not in df.columns:\n        print(\"[WARN] founded_year not found in processed data. Trend report skipped.\")\n        return\n    df[\"founded_year\"] = pd.to_numeric(df[\"founded_year\"], errors=\"coerce\")",
+        "detail": "src.trend_report",
+        "documentation": {}
+    },
+    {
+        "label": "IN_PATH",
+        "kind": 5,
+        "importPath": "src.trend_report",
+        "description": "src.trend_report",
+        "peekOfCode": "IN_PATH = Path(\"data/processed/with_topics.csv\")\nOUT_CSV = Path(\"reports/topic_trends_by_year.csv\")\nOUT_FIG = Path(\"reports/figures/topic_trends.png\")\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing file: {IN_PATH}\")\n        print(\"Run: python src/topic_model.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    if \"founded_year\" not in df.columns:",
+        "detail": "src.trend_report",
+        "documentation": {}
+    },
+    {
+        "label": "OUT_CSV",
+        "kind": 5,
+        "importPath": "src.trend_report",
+        "description": "src.trend_report",
+        "peekOfCode": "OUT_CSV = Path(\"reports/topic_trends_by_year.csv\")\nOUT_FIG = Path(\"reports/figures/topic_trends.png\")\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing file: {IN_PATH}\")\n        print(\"Run: python src/topic_model.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    if \"founded_year\" not in df.columns:\n        print(\"[WARN] founded_year not found in processed data. Trend report skipped.\")",
+        "detail": "src.trend_report",
+        "documentation": {}
+    },
+    {
+        "label": "OUT_FIG",
+        "kind": 5,
+        "importPath": "src.trend_report",
+        "description": "src.trend_report",
+        "peekOfCode": "OUT_FIG = Path(\"reports/figures/topic_trends.png\")\ndef main():\n    if not IN_PATH.exists():\n        print(f\"[ERROR] Missing file: {IN_PATH}\")\n        print(\"Run: python src/topic_model.py\")\n        sys.exit(1)\n    df = pd.read_csv(IN_PATH)\n    if \"founded_year\" not in df.columns:\n        print(\"[WARN] founded_year not found in processed data. Trend report skipped.\")\n        return",
+        "detail": "src.trend_report",
+        "documentation": {}
+    }
+]
